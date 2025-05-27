@@ -599,7 +599,7 @@ export default function Portfolio() {
                 <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full" />
               </h2>
               <p className="text-gray-600 dark:text-gray-400 max-w-2xl mb-12">
-                Interested in working together or have questions? I'd love to hear from you.
+                Interested in working together or have questions? I&apos;d love to hear from you.
               </p>
 
               <div className="w-full max-w-2xl mx-auto">
