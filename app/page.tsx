@@ -4,20 +4,67 @@ import Image from "next/image";
 import Head from "next/head";
 import { motion, useScroll, useTransform } from "framer-motion";
 
+export function RandomDots({ darkMode }: { darkMode: boolean }) {
+  const [dots, setDots] = useState<{ width: string; height: string; left: string; top: string; opacity: number }[]>([]);
+
+  useEffect(() => {
+    const newDots = Array.from({ length: 20 }).map(() => ({
+      width: `${Math.random() * 5 + 1}px`,
+      height: `${Math.random() * 5 + 1}px`,
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      opacity: Math.random() * 0.5 + 0.1,
+    }));
+    setDots(newDots);
+  }, []);
+
+  return (
+    <div className="fixed inset-0 -z-10 opacity-20">
+      {dots.map((style, i) => (
+        <div
+          key={i}
+          className={`absolute rounded-full ${darkMode ? 'bg-white' : 'bg-gray-900'}`}
+          style={style}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function Portfolio() {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
   const [scrolled, setScrolled] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
 
   // Scroll animations
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start start", "end start"]
+    offset: ["start start", "end start"],
+    layoutEffect: false,
   });
-  const yBg = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const yBg = useTransform(scrollYProgress, [0, 1], ["10%", "50%"]);
+
+  const pageName = 'homepage';
+
+  useEffect(() => {
+    fetch('/api/views-monitor', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ page: pageName }),
+    }).catch(console.error);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -152,6 +199,41 @@ export default function Portfolio() {
       ? projects.work
       : projects.personal;
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess(false);
+
+    try {
+      const response = await fetch('/api/send-message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) throw new Error('Failed to send message');
+
+      setSuccess(true);
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      console.error('Error sending mail:', errorMessage);
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
   return (
     <>
       <Head>
@@ -181,7 +263,7 @@ export default function Portfolio() {
         </motion.div>
 
         {/* Floating Particles */}
-        <div className="fixed inset-0 -z-10 opacity-20">
+        {/* <div className="fixed inset-0 -z-10 opacity-20">
           {[...Array(20)].map((_, i) => (
             <div
               key={i}
@@ -195,7 +277,9 @@ export default function Portfolio() {
               }}
             />
           ))}
-        </div>
+        </div> */}
+
+        <RandomDots darkMode={darkMode} />
 
         {/* Header */}
         <header className={`fixed w-full py-4 px-6 sm:px-10 transition-all duration-300 z-40 ${scrolled ? 'backdrop-blur-md bg-white/80 dark:bg-gray-900/80 shadow-sm' : 'bg-transparent'}`}>
@@ -215,6 +299,7 @@ export default function Portfolio() {
                 <a href="#skills" className="text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Skills</a>
                 <a href="#work" className="text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Work</a>
                 <a href="#projects" className="text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Projects</a>
+                <a href="#resume" className="text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Resume</a>
                 <a href="#contact" className="text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact</a>
               </nav>
 
@@ -275,6 +360,22 @@ export default function Portfolio() {
                   className="relative rounded-full border border-gray-200 dark:border-gray-700 transition-all flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-sm sm:text-base h-12 sm:h-14 px-5 sm:px-6 group overflow-hidden"
                 >
                   <span className="relative z-10">Contact Me</span>
+                </motion.a>
+                <motion.a
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onMouseEnter={() => handleLinkHover(true)}
+                  onMouseLeave={() => handleLinkHover(false)}
+                  href="/Saqlain_Naqshi_Resume.docx"
+                  download="Saqlain_Naqshi_Resume.docx"
+                  className="relative rounded-full border border-transparent transition-all flex items-center justify-center bg-gradient-to-r from-green-600 to-teal-600 text-white gap-2 hover:shadow-lg hover:shadow-green-500/20 font-medium text-sm sm:text-base h-12 sm:h-14 px-5 sm:px-6 group overflow-hidden"
+                >
+                  <span className="relative z-10 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download Resume
+                  </span>
                 </motion.a>
               </div>
             </motion.div>
@@ -491,6 +592,71 @@ export default function Portfolio() {
             </motion.div>
           </section>
 
+          {/* Resume Section - Add this between Work Projects and Personal Projects sections */}
+          <section id="resume" className="py-20">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex flex-col items-center text-center mb-12">
+                <h2 className="text-3xl sm:text-4xl font-bold mb-4 relative inline-block">
+                  My Resume
+                  <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-teal-500 to-green-500 rounded-full" />
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400 max-w-2xl">
+                  Download my complete resume for more details about my experience and skills
+                </p>
+              </div>
+
+              <div className="flex justify-center">
+                <motion.a
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onMouseEnter={() => handleLinkHover(true)}
+                  onMouseLeave={() => handleLinkHover(false)}
+                  href="/Saqlain_Naqshi_Resume.docx"
+                  download="Saqlain_Naqshi_Resume.docx"
+                  className={`relative rounded-xl border border-transparent transition-all flex items-center justify-center ${darkMode ? 'bg-gradient-to-r from-green-600 to-teal-600' : 'bg-gradient-to-r from-green-500 to-teal-500'} text-white gap-2 hover:shadow-lg hover:shadow-green-500/20 font-medium text-sm sm:text-base h-14 sm:h-16 px-6 sm:px-8 group overflow-hidden`}
+                >
+                  <span className="relative z-10 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download Resume (Docx)
+                  </span>
+                </motion.a>
+              </div>
+
+              <div className={`mt-12 p-6 rounded-xl border ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} shadow-sm`}>
+                <h3 className="text-xl font-semibold mb-4">Highlights</h3>
+                <ul className="space-y-3 text-gray-600 dark:text-gray-300">
+                  <li className="flex items-start">
+                    <span className={`mr-2 mt-1 ${darkMode ? 'text-teal-400' : 'text-teal-600'}`}>•</span>
+                    <span>1+ years experience as a Full-Stack Developer at Gildware Technologies</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className={`mr-2 mt-1 ${darkMode ? 'text-teal-400' : 'text-teal-600'}`}>•</span>
+                    <span>Specialized in React, Node.js, and React Native development</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className={`mr-2 mt-1 ${darkMode ? 'text-teal-400' : 'text-teal-600'}`}>•</span>
+                    <span>AI integration expertise with LangChain and LLMs</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className={`mr-2 mt-1 ${darkMode ? 'text-teal-400' : 'text-teal-600'}`}>•</span>
+                    <span>Published 5+ mobile apps on Play Store and 3+ on App store</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className={`mr-2 mt-1 ${darkMode ? 'text-teal-400' : 'text-teal-600'}`}>•</span>
+                    <span>B.Tech in Electronics and Communication Engineering</span>
+                  </li>
+                </ul>
+              </div>
+            </motion.div>
+          </section>
+
           {/* Personal Projects */}
           <section id="projects" className="py-20">
             <motion.div
@@ -673,13 +839,16 @@ export default function Portfolio() {
                     </a>
                   </div>
 
-                  <form className="space-y-4">
+                  <form className="space-y-4" onSubmit={handleSubmit}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label htmlFor="name" className={`block text-sm font-medium mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Name</label>
                         <input
                           type="text"
                           id="name"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleInputChange}
                           className={`w-full px-4 py-2 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300'} focus:outline-none focus:ring-2 focus:ring-blue-500`}
                           placeholder="Your name"
                         />
@@ -689,6 +858,9 @@ export default function Portfolio() {
                         <input
                           type="email"
                           id="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
                           className={`w-full px-4 py-2 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300'} focus:outline-none focus:ring-2 focus:ring-blue-500`}
                           placeholder="your@email.com"
                         />
@@ -699,6 +871,9 @@ export default function Portfolio() {
                       <input
                         type="text"
                         id="subject"
+                        name="subject"
+                        value={formData.subject}
+                        onChange={handleInputChange}
                         className={`w-full px-4 py-2 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300'} focus:outline-none focus:ring-2 focus:ring-blue-500`}
                         placeholder="Subject"
                       />
@@ -707,18 +882,34 @@ export default function Portfolio() {
                       <label htmlFor="message" className={`block text-sm font-medium mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Message</label>
                       <textarea
                         id="message"
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
                         rows={4}
                         className={`w-full px-4 py-2 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300'} focus:outline-none focus:ring-2 focus:ring-blue-500`}
                         placeholder="Your message"
                       />
                     </div>
+                    {error && (
+                      <div className="p-3 rounded-lg bg-red-100 text-red-700">
+                        Error: {error}
+                      </div>
+                    )}
+
+                    {success && (
+                      <div className="p-3 rounded-lg bg-green-100 text-green-700">
+                        Message sent successfully!
+                      </div>
+                    )}
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       type="submit"
                       className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium py-3 px-6 rounded-lg hover:shadow-lg transition-all"
+                      disabled={loading}
+
                     >
-                      Send Message
+                      {loading ? 'Sending...' : 'Send Message'}
                     </motion.button>
                   </form>
                 </div>
