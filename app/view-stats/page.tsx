@@ -2,10 +2,27 @@
 
 import { useState } from 'react';
 
+type ViewCount = {
+    page: string;
+    count: number;
+};
+
+type ViewLog = {
+    page: string;
+    ip: string;
+    userAgent: string;
+    timestamp: string;
+};
+
+type StatsResponse = {
+    views: ViewCount[];
+    recentLogs: ViewLog[];
+};
+
 export default function ViewStatsPage() {
     const [token, setToken] = useState('');
-    const [data, setData] = useState<any>(null);
-    const [error, setError] = useState('');
+    const [data, setData] = useState<StatsResponse | null>(null);
+    const [error, setError] = useState<string>('');
 
     const fetchStats = async () => {
         try {
@@ -19,87 +36,73 @@ export default function ViewStatsPage() {
                 throw new Error(`Error: ${res.status}`);
             }
 
-            const result = await res.json();
+            const result: StatsResponse = await res.json();
             setData(result);
             setError('');
-        } catch (err: any) {
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Unknown error';
             setData(null);
-            setError(err.message);
+            setError(message);
         }
     };
 
     return (
-        <div className="min-h-screen bg-white p-6">
-            <div className="max-w-4xl mx-auto">
-                <h1 className="text-3xl font-bold mb-6 text-center text-black">📊 View Stats Dashboard</h1>
+        <div className="p-6 max-w-3xl mx-auto text-black">
+            <h1 className="text-2xl font-bold mb-4">View Stats</h1>
 
-                <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-                    <label className="block font-semibold text-black mb-2">Secret Token</label>
-                    <input
-                        type="password"
-                        placeholder="Enter secret token"
-                        value={token}
-                        onChange={(e) => setToken(e.target.value)}
-                        className="p-3 border border-gray-400 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 text-black bg-white"
-                    />
-                    <button
-                        onClick={fetchStats}
-                        className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition"
-                    >
-                        Fetch Stats
-                    </button>
-                    {error && <p className="text-red-600 mt-4">{error}</p>}
+            <input
+                type="password"
+                placeholder="Enter secret token"
+                value={token}
+                onChange={(e) => setToken(e.target.value)}
+                className="p-2 border rounded w-full mb-4"
+            />
+
+            <button
+                onClick={fetchStats}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+                Fetch Stats
+            </button>
+
+            {error && <p className="text-red-500 mt-4">{error}</p>}
+
+            {data && (
+                <div className="mt-6">
+                    <h2 className="text-xl font-semibold mb-2">Views Per Page</h2>
+                    <ul className="mb-6">
+                        {data.views.map((v) => (
+                            <li key={v.page} className="mb-1">
+                                <strong>{v.page}</strong>: {v.count}
+                            </li>
+                        ))}
+                    </ul>
+
+                    <h2 className="text-xl font-semibold mb-2">Recent Logs</h2>
+                    <table className="w-full border border-collapse">
+                        <thead>
+                            <tr className="bg-gray-200">
+                                <th className="border p-2">Page</th>
+                                <th className="border p-2">IP</th>
+                                <th className="border p-2">User Agent</th>
+                                <th className="border p-2">Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.recentLogs.map((log, index) => (
+                                <tr key={index}>
+                                    <td className="border p-2">{log.page}</td>
+                                    <td className="border p-2">{log.ip}</td>
+                                    <td className="border p-2">{log.userAgent}</td>
+                                    <td className="border p-2">
+                                        {new Date(log.timestamp).toLocaleString()}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
-
-                {data && (
-                    <div className="space-y-8">
-                        <div className="bg-white shadow rounded-lg p-6">
-                            <h2 className="text-xl font-bold mb-4 text-black">📄 Views Per Page</h2>
-                            <ul className="space-y-2">
-                                {data.views.map((v: any) => (
-                                    <li key={v.page} className="flex justify-between border-b pb-2">
-                                        <span className="font-medium text-black">{v.page}</span>
-                                        <span className="text-black">{v.count}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div className="bg-white shadow rounded-lg p-6">
-                            <h2 className="text-xl font-bold mb-4 text-black">📜 Recent Logs</h2>
-                            <div className="overflow-auto max-h-[400px]">
-                                <table className="min-w-full text-sm border border-gray-300">
-                                    <thead className="sticky top-0 bg-gray-100 text-black">
-                                        <tr>
-                                            <th className="text-left p-2 border-b">Page</th>
-                                            <th className="text-left p-2 border-b">IP</th>
-                                            <th className="text-left p-2 border-b">User Agent</th>
-                                            <th className="text-left p-2 border-b">Time</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {data.recentLogs.map((log: any, index: number) => (
-                                            <tr key={index} className="hover:bg-gray-50">
-                                                <td className="p-2 border-b text-black">{log.page}</td>
-                                                <td className="p-2 border-b text-black truncate max-w-[150px]" title={log.ip}>
-                                                    {log.ip}
-                                                </td>
-                                                <td className="p-2 border-b text-black truncate max-w-[200px]" title={log.userAgent}>
-                                                    {log.userAgent}
-                                                </td>
-                                                <td className="p-2 border-b text-black">
-                                                    {new Date(log.timestamp).toLocaleString()}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
+            )}
         </div>
-
     );
 }
