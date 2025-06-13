@@ -47,7 +47,7 @@ export default function ViewStatsPage() {
     };
 
     return (
-        <div className="p-6 max-w-3xl mx-auto text-black">
+        <div className="p-6 max-w-3xl mx-auto text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900">
             <h1 className="text-2xl font-bold mb-4">View Stats</h1>
 
             <input
@@ -55,7 +55,7 @@ export default function ViewStatsPage() {
                 placeholder="Enter secret token"
                 value={token}
                 onChange={(e) => setToken(e.target.value)}
-                className="p-2 border rounded w-full mb-4"
+                className="p-2 border rounded w-full mb-4 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
             />
 
             <button
@@ -65,7 +65,7 @@ export default function ViewStatsPage() {
                 Fetch Stats
             </button>
 
-            {error && <p className="text-red-500 mt-4">{error}</p>}
+            {error && <p className="text-red-600 dark:text-red-400 mt-4">{error}</p>}
 
             {data && (
                 <div className="mt-6">
@@ -81,7 +81,7 @@ export default function ViewStatsPage() {
                     <h2 className="text-xl font-semibold mb-2">Recent Logs</h2>
                     <table className="w-full border border-collapse">
                         <thead>
-                            <tr className="bg-gray-200">
+                            <tr className="bg-gray-200 dark:bg-gray-700">
                                 <th className="border p-2">Page</th>
                                 <th className="border p-2">IP</th>
                                 <th className="border p-2">User Agent</th>
@@ -90,7 +90,7 @@ export default function ViewStatsPage() {
                         </thead>
                         <tbody>
                             {data.recentLogs.map((log, index) => (
-                                <tr key={index}>
+                                <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                                     <td className="border p-2">{log.page}</td>
                                     <td className="border p-2">{log.ip}</td>
                                     <td className="border p-2">{log.userAgent}</td>
