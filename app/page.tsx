@@ -87,7 +87,7 @@ export default function Portfolio() {
         description: "AI-driven travel assistant with itinerary generation and local recommendations",
         tags: ["AI", "LLM", "Langchain", "React Native"],
         link: "https://play.google.com/store/apps/details?id=com.journey.sage",
-        image: "/kashmir-ai-guide.jpg",
+        // image: "/kashmir-ai-guide.jpg",
         type: "mobile"
       },
       {
@@ -95,7 +95,7 @@ export default function Portfolio() {
         description: "Social media design upload and sharing platform",
         tags: ["React Native", "Social Media"],
         link: "https://play.google.com/store/apps/details?id=com.palpixel.pixelbot",
-        image: "/design-platform.jpg",
+        // image: "/design-platform.jpg",
         type: "mobile"
       },
       {
@@ -103,7 +103,7 @@ export default function Portfolio() {
         description: "E-commerce app for stationery products",
         tags: ["React Native", "E-commerce"],
         link: "https://play.google.com/store/apps/details?id=com.gildware.webView",
-        image: "/stationery-app.jpg",
+        // image: "/stationery-app.jpg",
         type: "mobile"
       },
       {
@@ -111,7 +111,7 @@ export default function Portfolio() {
         description: "Full-featured project tracking platform",
         tags: ["React", "Node.js", "Postgres", "SaaS"],
         link: "https://pd-f-dev.gildware.com",
-        image: "/project-management.jpg",
+        // image: "/project-management.jpg",
         type: "web"
       }
     ],
@@ -168,10 +168,10 @@ export default function Portfolio() {
   };
 
   const filteredProjects = activeTab === "all"
-    ? [...projects.work, ...projects.personal]
-    : activeTab === "work"
-      ? projects.work
-      : projects.personal;
+    ? [...projects.personal]
+    : activeTab === "mobile"
+      ? projects.personal.filter(p => p.type === "mobile")
+      : projects.personal.filter(p => p.type === "web");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -305,9 +305,10 @@ export default function Portfolio() {
               transition={{ duration: 0.8 }}
               className="max-w-3xl"
             >
-              <span className="text-sm font-medium px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 mb-4 inline-block">
+              <span className="text-sm font-medium px-3 py-1 rounded-full bg-[#e0f2ff] dark:bg-[#1e3a8a] text-[#004085] dark:text-blue-400 mb-4 inline-block">
                 Full-Stack Developer
               </span>
+
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-tight mb-6">
                 Crafting <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Digital Experiences</span> with Code & AI
               </h1>
@@ -340,8 +341,8 @@ export default function Portfolio() {
                   whileTap={{ scale: 0.95 }}
                   onMouseEnter={() => handleLinkHover(true)}
                   onMouseLeave={() => handleLinkHover(false)}
-                  href="/Saqlain_Naqshi_Resume.docx"
-                  download="Saqlain_Naqshi_Resume.docx"
+                  href="/Saqlain_Naqshi_Resume.pdf"
+                  download="Saqlain_Naqshi_Resume.pdf"
                   className="relative rounded-full border border-transparent transition-all flex items-center justify-center bg-gradient-to-r from-green-600 to-teal-600 text-white gap-2 hover:shadow-lg hover:shadow-green-500/20 font-medium text-sm sm:text-base h-12 sm:h-14 px-5 sm:px-6 group overflow-hidden"
                 >
                   <span className="relative z-10 flex items-center">
@@ -407,7 +408,7 @@ export default function Portfolio() {
                       {category.skills.map((skill, i) => (
                         <li key={i} className="flex items-center">
                           <span className={`w-1.5 h-1.5 rounded-full mr-2 ${darkMode ? 'bg-blue-400' : 'bg-blue-600'}`} />
-                          <span className="text-gray-600 dark:text-gray-300">{skill}</span>
+                          <span className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{skill}</span>
                         </li>
                       ))}
                     </ul>
@@ -449,7 +450,7 @@ export default function Portfolio() {
                       <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
                         <div>
                           <h3 className="text-xl font-bold">Software Engineer</h3>
-                          <p className="text-gray-600 dark:text-gray-400">Gildware Technologies Pvt Ltd</p>
+                          <p className={`${darkMode ? 'text-gray-300' : 'text-gray-400'}`}>Gildware Technologies Pvt Ltd</p>
                         </div>
                         <div className={`px-3 py-1 rounded-full text-sm font-medium flex justify-center items-center ${darkMode ? 'bg-blue-900/50 text-blue-400' : 'bg-blue-100 text-blue-600'}`}>
                           Apr 2024 - Apr 2025
@@ -458,19 +459,19 @@ export default function Portfolio() {
                       <ul className="space-y-3 text-gray-600 dark:text-gray-300">
                         <li className="flex items-start">
                           <span className="mr-2 mt-1">•</span>
-                          <span>Led full-stack development of 4+ web/mobile apps using React, Node.js, and React Native</span>
+                          <span className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Worked on full-stack development for 4+ web/mobile apps using React, Node.js, and React Native, including leading some projects.</span>
                         </li>
                         <li className="flex items-start">
                           <span className="mr-2 mt-1">•</span>
-                          <span>Engineered RESTful APIs with Express.js and managed databases (MongoDB, PostgreSQL)</span>
+                          <span className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Engineered RESTful APIs with Express.js and managed databases (MongoDB, PostgreSQL)</span>
                         </li>
                         <li className="flex items-start">
                           <span className="mr-2 mt-1">•</span>
-                          <span>Implemented AI features including chatbots and recommendation systems using LangChain</span>
+                          <span className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Implemented AI features including chatbots using LangChain</span>
                         </li>
                         <li className="flex items-start">
                           <span className="mr-2 mt-1">•</span>
-                          <span>Participated in Agile development processes including sprint planning and retrospectives</span>
+                          <span className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Participated in Agile development processes including sprint planning and retrospectives</span>
                         </li>
                       </ul>
                     </div>
@@ -490,8 +491,8 @@ export default function Portfolio() {
                           Graduated 2023
                         </div>
                       </div>
-                      <p className="text-gray-600 dark:text-gray-300">
-                        Specialized in Electronics and Communication Engineering with coursework in programming, data structures, and computer architecture.
+                      <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                        Specialized in Electronics and Communication Engineering with coursework in programming and Machine Learing and AI.
                       </p>
                     </div>
                   </div>
@@ -519,49 +520,70 @@ export default function Portfolio() {
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {projects.work.map((project, index) => (
-                  <motion.div
-                    key={index}
-                    whileHover={{ y: -5 }}
-                    className={`group relative overflow-hidden rounded-2xl border ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} shadow-sm hover:shadow-md transition-all`}
-                  >
-                    <div className="relative h-60 overflow-hidden">
-                      <Image
-                        src={project.image}
-                        alt={project.title}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                      <div className="absolute bottom-0 left-0 p-6">
-                        <h3 className="text-xl font-bold text-white">{project.title}</h3>
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {project.tags.map((tag, i) => (
-                            <span key={i} className={`text-xs px-2 py-1 rounded-full ${darkMode ? 'bg-gray-700/80 text-gray-200' : 'bg-white/90 text-gray-800'}`}>
-                              {tag}
-                            </span>
-                          ))}
+                {projects.work.map((project, index) => {
+                  const getGradient = () => {
+                    return project.type === "mobile"
+                      ? "bg-gradient-to-br from-teal-200 via-emerald-300 to-green-700 dark:from-teal-900 dark:via-emerald-900 dark:to-green-900"
+                      : "bg-gradient-to-br from-blue-100 via-indigo-200 to-purple-100 dark:from-blue-900 dark:via-indigo-900 dark:to-purple-900";
+                  };
+
+                  return (
+                    <motion.div
+                      key={index}
+                      whileHover={{ y: -5 }}
+                      className="group relative overflow-hidden rounded-2xl border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all"
+                    >
+                      <div className="relative h-60 overflow-hidden">
+                        <div className={`absolute inset-0 ${getGradient()} flex items-center justify-center`}>
+                          <div className="text-4xl font-bold opacity-20">
+                            {project.type === "mobile" ? "📱" : "🌐"}
+                          </div>
+                        </div>
+
+                        <div className="absolute bottom-0 left-0 p-6">
+                          <h3 className="text-xl font-bold text-white drop-shadow-md">{project.title}</h3>
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            {project.tags.map((tag, i) => (
+                              <span
+                                key={i}
+                                className="text-xs px-2 py-1 rounded-full bg-white/80 dark:bg-gray-700/80 text-gray-800 dark:text-gray-200"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="p-6">
-                      <p className="text-gray-600 dark:text-gray-300 mb-4">{project.description}</p>
-                      <a
-                        href={project.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`inline-flex items-center font-medium ${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-500'}`}
-                        onMouseEnter={() => handleLinkHover(true)}
-                        onMouseLeave={() => handleLinkHover(false)}
-                      >
-                        {project.type === "mobile" ? "View on Play Store" : "Visit Website"}
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
-                      </a>
-                    </div>
-                  </motion.div>
-                ))}
+
+                      <div className="p-6">
+                        <p className="text-gray-700 dark:text-gray-300 mb-4">{project.description}</p>
+                        <a
+                          href={project.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                        >
+                          {project.type === "mobile" ? "View on Play Store" : "Visit Website"}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M14 5l7 7m0 0l-7 7m7-7H3"
+                            />
+                          </svg>
+                        </a>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+
               </div>
             </motion.div>
           </section>
@@ -590,41 +612,41 @@ export default function Portfolio() {
                   whileTap={{ scale: 0.95 }}
                   onMouseEnter={() => handleLinkHover(true)}
                   onMouseLeave={() => handleLinkHover(false)}
-                  href="/Saqlain_Naqshi_Resume.docx"
-                  download="Saqlain_Naqshi_Resume.docx"
+                  href="/Saqlain_Naqshi_Resume.pdf"
+                  download="Saqlain_Naqshi_Resume.pdf"
                   className={`relative rounded-xl border border-transparent transition-all flex items-center justify-center ${darkMode ? 'bg-gradient-to-r from-green-600 to-teal-600' : 'bg-gradient-to-r from-green-500 to-teal-500'} text-white gap-2 hover:shadow-lg hover:shadow-green-500/20 font-medium text-sm sm:text-base h-14 sm:h-16 px-6 sm:px-8 group overflow-hidden`}
                 >
                   <span className="relative z-10 flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
-                    Download Resume (Docx)
+                    Download Resume
                   </span>
                 </motion.a>
               </div>
 
               <div className={`mt-12 p-6 rounded-xl border ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} shadow-sm`}>
                 <h3 className="text-xl font-semibold mb-4">Highlights</h3>
-                <ul className="space-y-3 text-gray-600 dark:text-gray-300">
+                <ul className="space-y-3 text-gray-700 dark:text-gray-300">
                   <li className="flex items-start">
                     <span className={`mr-2 mt-1 ${darkMode ? 'text-teal-400' : 'text-teal-600'}`}>•</span>
-                    <span>1+ years experience as a Full-Stack Developer at Gildware Technologies</span>
+                    <span className="text-gray-600">1+ years experience as a Full-Stack Developer at Gildware Technologies</span>
                   </li>
                   <li className="flex items-start">
                     <span className={`mr-2 mt-1 ${darkMode ? 'text-teal-400' : 'text-teal-600'}`}>•</span>
-                    <span>Specialized in React, Node.js, and React Native development</span>
+                    <span className="text-gray-600">Specialized in React, Node.js, and React Native development</span>
                   </li>
                   <li className="flex items-start">
                     <span className={`mr-2 mt-1 ${darkMode ? 'text-teal-400' : 'text-teal-600'}`}>•</span>
-                    <span>AI integration expertise with LangChain and LLMs</span>
+                    <span className="text-gray-600">AI integration expertise with LangChain and LLMs</span>
                   </li>
                   <li className="flex items-start">
                     <span className={`mr-2 mt-1 ${darkMode ? 'text-teal-400' : 'text-teal-600'}`}>•</span>
-                    <span>Published 5+ mobile apps on Play Store and 3+ on App store</span>
+                    <span className="text-gray-600">Published 5+ mobile apps on Play Store and 3+ on App store</span>
                   </li>
                   <li className="flex items-start">
                     <span className={`mr-2 mt-1 ${darkMode ? 'text-teal-400' : 'text-teal-600'}`}>•</span>
-                    <span>B.Tech in Electronics and Communication Engineering</span>
+                    <span className="text-gray-600">B.Tech in Electronics and Communication Engineering</span>
                   </li>
                 </ul>
               </div>
